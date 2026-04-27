@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>เปิดไพ่ทาโรต์ ทำนายบทบาทงานบริหารวิชาการ</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+Thai:wght@500;700&family=Sarabun:wght@400;500;600;700&display=swap');
+
+    :root {
+      --navy: #070b24;
+      --purple: #2a1458;
+      --gold: #d9b45f;
+      --gold2: #fff0a6;
+      --text: #fff7db;
+      --muted: #d9d1ea;
+      --border: rgba(217,180,95,.55);
+      --danger: #ff8fa3;
+      --success: #a9ffcf;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: 'Sarabun', sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 20% 10%, rgba(217,180,95,.2), transparent 25%),
+        radial-gradient(circle at 85% 20%, rgba(124,78,255,.2), transparent 25%),
+        linear-gradient(135deg, #030513, var(--navy), var(--purple));
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        radial-gradient(circle, rgba(255,255,255,.8) 1px, transparent 1px),
+        radial-gradient(circle, rgba(217,180,95,.65) 1px, transparent 1px);
+      background-size: 70px 70px, 110px 110px;
+      opacity: .16;
+      pointer-events: none;
+      animation: sparkleMove 14s linear infinite;
+    }
+
+    @keyframes sparkleMove {
+      from { transform: translateY(0); }
+      to { transform: translateY(-80px); }
+    }
+
+    .screen {
+      display: none;
+      min-height: 100vh;
+      padding: 32px 20px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .screen.active {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      animation: fadeIn .45s ease both;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .panel {
+      width: min(1120px, 100%);
+      background: linear-gradient(180deg, rgba(255,255,255,.12), rgba(255,255,255,.04));
+      border: 1px solid var(--border);
+      border-radius: 30px;
+      box-shadow: 0 0 45px rgba(217,180,95,.16), inset 0 0 45px rgba(255,255,255,.04);
+      padding: 34px;
+      backdrop-filter: blur(14px);
+    }
+
+    .center { text-align: center; }
+
+    .logo {
+      width: 82px;
+      height: 82px;
+      margin: 0 auto 12px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      font-size: 40px;
+      color: var(--gold2);
+      border: 1px solid var(--border);
+      box-shadow: 0 0 30px rgba(217,180,95,.4);
+      background: radial-gradient(circle, rgba(217,180,95,.25), rgba(42,20,88,.55));
+    }
+
+    h1, h2, h3 {
+      font-family: 'Noto Serif Thai', serif;
+      margin: 0;
+      line-height: 1.25;
+    }
+
+    h1 {
+      font-size: clamp(2rem, 5vw, 4rem);
+      color: var(--gold2);
+      text-shadow: 0 0 18px rgba(217,180,95,.45);
+    }
+
+    .subtitle {
+      font-size: clamp(1rem, 2vw, 1.35rem);
+      color: var(--muted);
+      margin: 14px auto 26px;
+      max-width: 760px;
+    }
+
+    .form-grid {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 22px auto;
+      max-width: 420px;
+      position: relative;
+    }
+
+    input {
+      width: 100%;
+      padding: 16px 18px 16px 48px;
+      border-radius: 20px;
+      border: 1px solid rgba(217,180,95,.45);
+      background: rgba(5,7,25,.55);
+      color: white;
+      font-size: 1.05rem;
+      outline: none;
+      text-align: center;
+      transition: box-shadow .25s ease, border-color .25s ease, transform .15s ease;
+    }
+
+    input::placeholder { color: rgba(255,255,255,.7); }
+
+    input:focus {
+      border-color: var(--gold2);
+      box-shadow: 0 0 22px rgba(217,180,95,.45), 0 0 40px rgba(124,78,255,.25);
+      transform: scale(1.02);
+    }
+
+    .input-icon {
+      position: absolute;
+      left: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 20px;
+      pointer-events: none;
+      animation: iconGlow 2s ease-in-out infinite;
+    }
+
+    @keyframes iconGlow {
+      0%, 100% { opacity: .85; transform: translateY(-50%) scale(1); }
+      50% { opacity: 1; transform: translateY(-50%) scale(1.14); }
+    }
+
+    .btn {
+      border: 0;
+      padding: 14px 22px;
+      border-radius: 999px;
+      cursor: pointer;
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #190d2c;
+      background: linear-gradient(135deg, var(--gold2), var(--gold));
+      box-shadow: 0 0 24px rgba(217,180,95,.35);
+      transition: transform .2s ease, box-shadow .2s ease;
+    }
+
+    .btn:hover { transform: translateY(-2px); box-shadow: 0 0 34px rgba(217,180,95,.55); }
+
+    .leaderboard {
+      margin-top: 28px;
+      padding: 18px;
+      border-radius: 22px;
+      background: rgba(0,0,0,.23);
+      border: 1px solid rgba(217,180,95,.3);
+    }
+
+    table { width: 100%; border-collapse: collapse; }
+    th, td { padding: 10px; border-bottom: 1px solid rgba(255,255,255,.1); }
+    th { color: var(--gold2); }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 18px;
+      flex-wrap: wrap;
+    }
+
+    .stat-pill {
+      padding: 9px 14px;
+      border-radius: 999px;
+      background: rgba(0,0,0,.26);
+      border: 1px solid rgba(217,180,95,.28);
+      color: var(--gold2);
+      font-weight: 700;
+    }
+
+    .progress-wrap {
+      height: 12px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.13);
+      overflow: hidden;
+      margin-bottom: 20px;
+    }
+
+    .progress {
+      height: 100%;
+      width: 100%;
+      background: linear-gradient(90deg, var(--gold2), var(--gold));
+      transition: width .2s linear;
+    }
+
+    .game-layout {
+      display: grid;
+      grid-template-columns: 320px 1fr;
+      gap: 28px;
+      align-items: center;
+    }
+
+    .card-scene {
+      min-height: 430px;
+      display: grid;
+      place-items: center;
+      position: relative;
+    }
+
+    .card-scene::after {
+      content: '';
+      position: absolute;
+      bottom: 34px;
+      width: 220px;
+      height: 40px;
+      background: radial-gradient(ellipse at center, rgba(0,0,0,.58), transparent 70%);
+      filter: blur(8px);
+      opacity: .58;
+      z-index: 0;
+    }
+
+    .tarot-card {
+      width: 260px;
+      height: 390px;
+      position: relative;
+      cursor: pointer;
+      z-index: 1;
+      filter: drop-shadow(0 18px 32px rgba(0,0,0,.45));
+    }
+
+    .card-face {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      border-radius: 26px;
+      overflow: hidden;
+      border: 2px solid var(--gold);
+      box-shadow: 0 0 30px rgba(217,180,95,.28), inset 0 0 30px rgba(217,180,95,.12);
+      background: #050718;
+    }
+
+    .card-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      pointer-events: none;
+    }
+
+    /* ก่อนคลิก = front / หลังคลิก = back */
+    .tarot-card:not(.opened) .card-front {
+      display: block;
+      z-index: 2;
+    }
+
+    .tarot-card:not(.opened) .card-back {
+      display: none;
+      z-index: 1;
+    }
+
+    .tarot-card.opened .card-front {
+      display: none;
+      z-index: 1;
+    }
+
+    .tarot-card.opened .card-back {
+      display: block;
+      z-index: 2;
+      animation: cardRevealSoft .42s ease both;
+    }
+
+    @keyframes cardRevealSoft {
+      from { opacity: 0; transform: scale(.96); filter: brightness(.9); }
+      to { opacity: 1; transform: scale(1); filter: brightness(1); }
+    }
+
+    .hint {
+      margin-top: 18px;
+      color: var(--gold2);
+      animation: pulse 1.2s infinite;
+      font-weight: 700;
+    }
+
+    @keyframes pulse { 50% { opacity: .55; } }
+
+    .question-box {
+      padding: 24px;
+      border-radius: 24px;
+      background: rgba(0,0,0,.24);
+      border: 1px solid rgba(217,180,95,.3);
+    }
+
+    .question {
+      font-size: 1.18rem;
+      line-height: 1.75;
+      color: #fff;
+      margin: 12px 0 18px;
+    }
+
+    .choice-grid {
+      display: grid;
+      gap: 12px;
+    }
+
+    .choice {
+      padding: 14px 16px;
+      border-radius: 18px;
+      border: 1px solid rgba(217,180,95,.32);
+      background: rgba(255,255,255,.075);
+      color: white;
+      text-align: left;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all .18s ease;
+      line-height: 1.55;
+      font-family: 'Sarabun', sans-serif;
+    }
+
+    .choice:hover {
+      transform: translateX(4px);
+      border-color: var(--gold2);
+      box-shadow: 0 0 18px rgba(217,180,95,.25);
+    }
+
+    .reveal-card {
+      max-width: 820px;
+      margin: auto;
+      padding: 28px;
+      border-radius: 28px;
+      border: 1px solid var(--border);
+      background: linear-gradient(180deg, rgba(255,255,255,.12), rgba(0,0,0,.18));
+      text-align: center;
+    }
+
+    .reveal-card.correct {
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 0 55px rgba(169,255,207,.25), 0 0 85px rgba(217,180,95,.2);
+      animation: successGlow 1.3s ease both;
+    }
+
+    .reveal-card.correct::before {
+      content: '';
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255,240,166,.9), rgba(217,180,95,.4), transparent 70%);
+      transform: translate(-50%, -50%) scale(0);
+      animation: lightBurst 1.15s ease-out both;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .reveal-card > * { position: relative; z-index: 1; }
+
+    @keyframes successGlow {
+      0% { transform: scale(.98); filter: brightness(1); }
+      45% { transform: scale(1.01); filter: brightness(1.16); }
+      100% { transform: scale(1); filter: brightness(1); }
+    }
+
+    @keyframes lightBurst {
+      0% { opacity: .9; transform: translate(-50%, -50%) scale(0); }
+      70% { opacity: .45; transform: translate(-50%, -50%) scale(24); }
+      100% { opacity: 0; transform: translate(-50%, -50%) scale(32); }
+    }
+
+    .reveal-card.wrong {
+      animation: shake .45s ease both;
+      box-shadow: 0 0 40px rgba(255,143,163,.22);
+    }
+
+    @keyframes shake {
+      20%, 60% { transform: translateX(-8px); }
+      40%, 80% { transform: translateX(8px); }
+    }
+
+    .message {
+      font-family: 'Noto Serif Thai', serif;
+      font-size: clamp(1.35rem, 3vw, 2.2rem);
+      color: var(--gold2);
+    }
+
+    .reason {
+      margin: 18px auto;
+      max-width: 760px;
+      line-height: 1.8;
+      font-size: 1.1rem;
+      color: #fff;
+    }
+
+    .answer { color: var(--success); font-weight: 800; font-size: 1.2rem; }
+    .answer.wrong-color { color: var(--danger); }
+
+    .end-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+      margin: 22px 0;
+    }
+
+    .summary-card {
+      padding: 18px;
+      border-radius: 20px;
+      background: rgba(0,0,0,.24);
+      border: 1px solid rgba(217,180,95,.25);
+    }
+
+    .big-score {
+      font-size: clamp(2.5rem, 6vw, 5rem);
+      font-weight: 800;
+      color: var(--gold2);
+      text-shadow: 0 0 25px rgba(217,180,95,.45);
+    }
+
+    .modal {
+      position: fixed;
+      inset: 0;
+      display: none;
+      place-items: center;
+      background: rgba(0,0,0,.55);
+      z-index: 20;
+      padding: 20px;
+    }
+
+    .modal.active { display: grid; }
+
+    .modal-box {
+      max-width: 420px;
+      background: linear-gradient(145deg, #171045, #2b1459);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 28px;
+      text-align: center;
+      box-shadow: 0 0 45px rgba(217,180,95,.35);
+    }
+
+    @media (max-width: 880px) {
+      .panel { padding: 22px; }
+      .form-grid, .game-layout, .end-grid { grid-template-columns: 1fr; }
+      .game-layout { display: grid; }
+      .tarot-card { width: 230px; height: 345px; }
+      .card-scene { min-height: 385px; }
+    }
+  </style>
+</head>
+<body>
+  <section id="home" class="screen active">
+    <div class="panel center">
+      <div class="logo">🔮</div>
+      <h1>เปิดไพ่ทาโรต์<br>ทำนายบทบาทงานบริหารวิชาการ</h1>
+      <p class="subtitle">ศาสตร์แห่งไพ่ทาโรต์จะสะท้อนวิธีคิดเชิงกลยุทธ์ของคุณ…<br>คุณพร้อมหรือยังที่จะค้นพบบทบาทของตนเองในฐานะนักบริหารวิชาการ?</p>
+
+      <div class="form-grid">
+        <span class="input-icon">🔮</span>
+        <input id="playerName" placeholder="ชื่อว่าที่ผู้บริหารในอนาคต" />
+      </div>
+      <button class="btn" onclick="startGame()">เปิดไพ่แรก</button>
+
+      <div class="leaderboard">
+        <h3>🏆 ตารางคะแนนสูงสุด</h3>
+        <table>
+          <thead><tr><th>อันดับ</th><th>ชื่อ</th><th>คะแนน</th></tr></thead>
+          <tbody id="leaderboardBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section id="game" class="screen">
+    <div class="panel">
+      <div class="topbar">
+        <div class="stat-pill" id="qProgress">ไพ่ 1/6</div>
+        <div class="stat-pill">⏳ <span id="timer">45</span> วินาที</div>
+        <div class="stat-pill">คะแนน: <span id="scoreNow">0</span></div>
+      </div>
+      <div class="progress-wrap"><div id="progressBar" class="progress"></div></div>
+
+      <div class="game-layout">
+        <div>
+          <div class="card-scene">
+            <div id="tarotCard" class="tarot-card" onclick="openCard()">
+              <div class="card-face card-front">
+                <img id="cardFrontImg" class="card-img" alt="ไพ่ก่อนเปิด">
+              </div>
+              <div class="card-face card-back">
+                <img id="cardBackImg" class="card-img" alt="ไพ่หลังเปิด">
+              </div>
+            </div>
+          </div>
+          <div id="flipHint" class="hint center">คลิกเพื่อเปิดไพ่</div>
+        </div>
+
+        <div id="questionArea" class="question-box" style="display:none;">
+          <h3>คำถามเชิงสถานการณ์</h3>
+          <div id="questionText" class="question"></div>
+          <div id="choices" class="choice-grid"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="reveal" class="screen">
+    <div class="panel">
+      <div id="revealCard" class="reveal-card">
+        <div style="font-size:64px;">✨</div>
+        <div id="feedbackMessage" class="message"></div>
+        <p id="correctAnswer" class="answer"></p>
+        <p id="reasonText" class="reason"></p>
+        <p id="scoreGain" class="stat-pill" style="display:inline-block;"></p>
+        <br><br>
+        <button id="nextBtn" class="btn" onclick="nextQuestion()">เปิดไพ่ถัดไป</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="end" class="screen">
+    <div class="panel center">
+      <div style="font-size:76px;">🏆</div>
+      <h1>ภารกิจเสร็จสมบูรณ์</h1>
+      <p class="subtitle">ทุกไพ่สะท้อนวิธีคิดของคุณในฐานะนักบริหาร</p>
+      <div class="big-score" id="finalScore"></div>
+      <div class="end-grid">
+        <div class="summary-card" id="playerSummary"></div>
+        <div class="summary-card" id="resultSummary"></div>
+      </div>
+      <div class="summary-card">
+        <h3>ตารางคะแนนรายข้อ</h3>
+        <table>
+          <thead><tr><th>ไพ่</th><th>ผล</th><th>คะแนน</th></tr></thead>
+          <tbody id="questionScoreTable"></tbody>
+        </table>
+      </div>
+      <br>
+      <button class="btn" onclick="restartGame()">เล่นอีกครั้ง</button>
+    </div>
+  </section>
+
+  <div id="alertModal" class="modal">
+    <div class="modal-box">
+      <h2>🔮 ไพ่ยังไม่พร้อมเปิด</h2>
+      <p>กรุณากรอกข้อมูลให้ครบก่อนเริ่มภารกิจ</p>
+      <button class="btn" onclick="closeAlert()">ตกลง</button>
+    </div>
+  </div>
+
+  <script>
+    const questions = [
+      {
+        card: 'ไพ่แห่งกลยุทธ์ในวิกฤต',
+        question: 'หากเกิดสถานการณ์ที่ทำให้การเรียนการสอนปกติหยุดชะงัก เช่น โรคระบาดหรือภัยพิบัติ ในฐานะผู้บริหาร ท่านควรให้ความสำคัญกับงานในข้อใดเป็นอันดับแรกเพื่อให้การเรียนรู้ไม่หยุดนิ่ง?',
+        choices: ['การพัฒนากระบวนการเรียนรู้ : โดยเน้นการปรับเปลี่ยนรูปแบบการสอนให้เป็น Hybrid หรือ Online', 'การพัฒนาและใช้สื่อเทคโนโลยีเพื่อการศึกษา : โดยจัดหาอุปกรณ์และแพลตฟอร์มให้พร้อมที่สุด', 'การวางแผนงานด้านวิชาการ : โดยการปรับโครงสร้างหลักสูตรและเวลาเรียนให้ยืดหยุ่นตามสถานการณ์', 'การนิเทศการศึกษา : เพื่อติดตามและให้ขวัญกำลังใจครูในการจัดการเรียนรู้รูปแบบใหม่'],
+        answer: 2,
+        reason: 'แม้ข้ออื่นจะสำคัญ แต่ในทางบริหาร การวางแผนคือจุดตั้งต้น หากไม่ปรับแผนงานและโครงสร้างหลักสูตรให้ยืดหยุ่นก่อน การใช้เทคโนโลยีหรือการสอนรูปแบบใหม่จะขาดทิศทาง แผนคือเข็มทิศในการจัดสรรทรัพยากรทั้งหมด'
+      },
+      {
+        card: 'ไพ่แห่งคุณภาพดิจิทัล',
+        question: 'การดำเนินการพัฒนาเทคโนโลยีเพื่อการศึกษา จะสะท้อนถึงการพัฒนาคุณภาพภายในและมาตรฐานการศึกษาได้ชัดเจนที่สุดผ่านกิจกรรมใด?',
+        choices: ['การจัดซื้อคอมพิวเตอร์และติดตั้งอินเทอร์เน็ตความเร็วสูงครบทุกห้องเรียน', 'การที่ครูสามารถผลิตสื่อการสอนแบบ Multimedia ได้อย่างสวยงามและทันสมัย', 'การนำข้อมูลการเข้าเรียนและผลสัมฤทธิ์ในระบบ Digital มาวิเคราะห์เพื่อวางแผนพัฒนาผู้เรียน', 'การส่งครูไปอบรมด้านการใช้ AI เพื่อการศึกษาในระดับสากล'],
+        answer: 2,
+        reason: 'มาตรฐานการศึกษาเน้นผลลัพธ์ที่ผู้เรียนและการพัฒนาอย่างต่อเนื่อง การมีอุปกรณ์หรือสื่อที่สวยงามเป็นเพียงปัจจัยนำเข้า แต่การใช้ข้อมูลมาวิเคราะห์และวางแผนพัฒนาผู้เรียนคือกระบวนการประกันคุณภาพที่แท้จริง'
+      },
+      {
+        card: 'ไพ่แห่งวัฒนธรรมวิจัย',
+        question: 'ในฐานะผู้นำทางวิชาการ ท่านจะส่งเสริมการวิจัยเพื่อพัฒนาคุณภาพการศึกษาอย่างไรให้เกิดวัฒนธรรมองค์กร ไม่ใช่แค่การทำเพื่อเลื่อนวิทยฐานะ?',
+        choices: ['กำหนดให้ครูทุกคนต้องส่งรายงานวิจัยชั้นเรียน 1 เล่มต่อภาคเรียน', 'สนับสนุนงบประมาณและจัดจ้างผู้เชี่ยวชาญภายนอกมาทำวิจัยให้โรงเรียน', 'สร้างชุมชนแห่งการเรียนรู้ PLC เพื่อใช้โจทย์ปัญหาจริงในห้องเรียนมาเป็นหัวข้อวิจัยร่วมกัน', 'จัดประกวดนวัตกรรมและงานวิจัยดีเด่นพร้อมมอบรางวัลในวันไหว้ครู'],
+        answer: 2,
+        reason: 'การบังคับหรือการจ้างไม่สร้างความยั่งยืน ส่วนรางวัลเป็นแรงจูงใจภายนอก แต่ PLC ทำให้ครูมองว่าการวิจัยคือส่วนหนึ่งของการแก้ปัญหาในงานประจำ และสร้างวัฒนธรรมการเรียนรู้ร่วมกัน'
+      },
+      {
+        card: 'ไพ่แห่งการรู้จักผู้เรียน',
+        question: 'ข้อใดคือการบูรณาการระหว่างการแนะแนวและการจัดกระบวนการเรียนรู้ที่ทรงพลังที่สุด?',
+        choices: ['การเชิญวิทยากรมาแนะแนวอาชีพให้นักเรียนในชั่วโมงกิจกรรม', 'การวิเคราะห์พหุปัญญา Multiple Intelligences ของผู้เรียนเพื่อจัดกลุ่มการเรียนตามความถนัด', 'การจัดทำสมุดระเบียนสะสมเพื่อบันทึกประวัตินักเรียนอย่างละเอียด', 'การเยี่ยมบ้านนักเรียน 100% ตามนโยบายของต้นสังกัด'],
+        answer: 1,
+        reason: 'การแนะแนวในงานวิชาการไม่ใช่แค่การให้คำปรึกษา แต่คือการรู้จักเด็กเพื่อนำไปออกแบบการเรียนรู้ ข้อ ข เชื่อมโยงข้อมูลผู้เรียนกับการจัดการเรียนการสอนโดยตรง'
+      },
+      {
+        card: 'ไพ่แห่งวิสัยทัศน์เครือข่าย',
+        question: 'การประสานความร่วมมือในการพัฒนาวิชาการกับสถานศึกษาและองค์กรอื่น ข้อใดแสดงถึงวิสัยทัศน์ของผู้บริหารระดับสูงมากที่สุด?',
+        choices: ['การพานักเรียนไปทัศนศึกษาที่แหล่งเรียนรู้ในท้องถิ่นทุกปี', 'การลงนาม MOU กับมหาวิทยาลัยเพื่อพัฒนาหลักสูตรต่อเนื่องเชื่อมโยง Credit Bank', 'การขอยืมสื่อการสอนจากโรงเรียนขนาดใหญ่ในพื้นที่ใกล้เคียง', 'การร่วมเป็นเจ้าภาพจัดงานแข่งขันงานศิลปหัตถกรรมนักเรียน'],
+        answer: 1,
+        reason: 'การบริหารงานวิชาการระดับสูงต้องมองถึงการสร้างโอกาสเชิงโครงสร้าง การทำ MOU และ Credit Bank คือการวางรากฐานอนาคตทางการเรียนรู้ให้ผู้เรียน มากกว่าการทำกิจกรรมเป็นครั้งคราว'
+      },
+      {
+        card: 'ไพ่แห่งผลลัพธ์การนิเทศ',
+        question: 'หากท่านต้องการประเมินว่า การนิเทศการศึกษาของโรงเรียนประสบความสำเร็จหรือไม่ ท่านควรพิจารณาจากสิ่งใดเป็นสำคัญ?',
+        choices: ['จำนวนครั้งที่ผู้บริหารเข้าสังเกตการสอนในห้องเรียน', 'คะแนนประเมินความพึงพอใจของครูที่มีต่อผู้นิเทศ', 'การเปลี่ยนแปลงพฤติกรรมการสอนของครูที่ส่งผลต่อคุณภาพผู้เรียนอย่างมีนัยสำคัญ', 'ความครบถ้วนของเอกสารและปฏิทินการนิเทศที่เป็นปัจจุบัน'],
+        answer: 2,
+        reason: 'ในทางบริหารแบบมุ่งผลลัพธ์ เอกสารหรือจำนวนครั้งเป็นเพียงกระบวนการ หากครูไม่เปลี่ยนวิธีสอนและคุณภาพผู้เรียนไม่ดีขึ้น การนิเทศก็ยังไม่บรรลุเป้าหมายหลัก'
+      }
+    ];
+
+    const labels = ['ก', 'ข', 'ค', 'ง'];
+    let player = {};
+    let current = 0;
+    let score = 0;
+    let correct = 0;
+    let wrong = 0;
+    let timer = 45;
+    let interval = null;
+    let opened = false;
+    let totalTimeUsed = 0;
+    let perQuestion = [];
+
+    function showScreen(id) {
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+    }
+
+    function loadLeaderboard() {
+      const board = JSON.parse(localStorage.getItem('tarotLeaderboard') || '[]').slice(0, 5);
+      const body = document.getElementById('leaderboardBody');
+      body.innerHTML = board.length
+        ? board.map((p, i) => `<tr><td>${i===0?'🥇':i===1?'🥈':i===2?'🥉':i+1}</td><td>${p.name}</td><td>${p.score}</td></tr>`).join('')
+        : '<tr><td colspan="3">ยังไม่มีคะแนน</td></tr>';
+    }
+
+    function startGame() {
+      const name = document.getElementById('playerName').value.trim();
+      if (!name) return document.getElementById('alertModal').classList.add('active');
+      player = { name };
+      current = 0;
+      score = 0;
+      correct = 0;
+      wrong = 0;
+      totalTimeUsed = 0;
+      perQuestion = [];
+      showScreen('game');
+      loadQuestion();
+    }
+
+    function closeAlert() {
+      document.getElementById('alertModal').classList.remove('active');
+    }
+
+    function loadQuestion() {
+      clearInterval(interval);
+      timer = 45;
+      opened = false;
+      const q = questions[current];
+
+      document.getElementById('tarotCard').classList.remove('opened');
+      document.getElementById('cardFrontImg').src = `./card${current + 1}-front.png`;
+      document.getElementById('cardBackImg').src = `./card${current + 1}-back.png`;
+
+      document.getElementById('qProgress').textContent = `ไพ่ ${current + 1}/${questions.length}`;
+      document.getElementById('timer').textContent = timer;
+      document.getElementById('scoreNow').textContent = score;
+      document.getElementById('progressBar').style.width = '100%';
+      document.getElementById('questionArea').style.display = 'none';
+      document.getElementById('flipHint').style.display = 'block';
+      document.getElementById('questionText').textContent = q.question;
+      document.getElementById('choices').innerHTML = q.choices.map((c, i) =>
+        `<button class="choice" onclick="answerQuestion(${i})"><b>${labels[i]}.</b> ${c}</button>`
+      ).join('');
+    }
+
+    function openCard() {
+      if (opened) return;
+      opened = true;
+      playCardSound();
+      document.getElementById('tarotCard').classList.add('opened');
+      document.getElementById('flipHint').style.display = 'none';
+      setTimeout(() => {
+        document.getElementById('questionArea').style.display = 'block';
+      }, 420);
+      startTimer();
+    }
+
+    function playCardSound() {
+      const AudioContext = window.AudioContext || window.webkitAudioContext;
+      if (!AudioContext) return;
+      const ctx = new AudioContext();
+      const now = ctx.currentTime;
+      [520, 780, 1040].forEach((freq, index) => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(freq, now + index * 0.045);
+        gain.gain.setValueAtTime(0.0001, now + index * 0.045);
+        gain.gain.exponentialRampToValueAtTime(0.08, now + index * 0.045 + 0.015);
+        gain.gain.exponentialRampToValueAtTime(0.0001, now + index * 0.045 + 0.24);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(now + index * 0.045);
+        osc.stop(now + index * 0.045 + 0.26);
+      });
+    }
+
+    function playSuccessSound() {
+      const AudioContext = window.AudioContext || window.webkitAudioContext;
+      if (!AudioContext) return;
+      const ctx = new AudioContext();
+      const now = ctx.currentTime;
+      [660, 880, 1320].forEach((freq, index) => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(freq, now + index * 0.08);
+        gain.gain.setValueAtTime(0.0001, now + index * 0.08);
+        gain.gain.exponentialRampToValueAtTime(0.07, now + index * 0.08 + 0.02);
+        gain.gain.exponentialRampToValueAtTime(0.0001, now + index * 0.08 + 0.36);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(now + index * 0.08);
+        osc.stop(now + index * 0.08 + 0.38);
+      });
+    }
+
+    function startTimer() {
+      interval = setInterval(() => {
+        timer--;
+        document.getElementById('timer').textContent = timer;
+        document.getElementById('progressBar').style.width = `${(timer / 45) * 100}%`;
+        if (timer <= 0) answerQuestion(-1);
+      }, 1000);
+    }
+
+    function answerQuestion(choice) {
+      clearInterval(interval);
+      const q = questions[current];
+      const isCorrect = choice === q.answer;
+      const used = 45 - Math.max(timer, 0);
+      totalTimeUsed += used;
+      let gain = 0;
+
+      if (isCorrect) {
+        gain = 20 + Math.max(timer, 0) * 5;
+        score += gain;
+        correct++;
+      } else {
+        wrong++;
+      }
+
+      perQuestion.push({ card: q.card, ok: isCorrect, gain });
+      showReveal(isCorrect, gain, q);
+    }
+
+    function showReveal(isCorrect, gain, q) {
+      const revealCard = document.getElementById('revealCard');
+      revealCard.className = 'reveal-card';
+      void revealCard.offsetWidth;
+      revealCard.className = `reveal-card ${isCorrect ? 'correct' : 'wrong'}`;
+      if (isCorrect) playSuccessSound();
+
+      document.getElementById('feedbackMessage').textContent = isCorrect
+        ? 'ไพ่เปิดเผยความจริง…คุณคิดแบบนักบริหาร'
+        : 'ไพ่กำลังเตือน…ลองคิดใหม่ในมุมผู้บริหาร';
+      document.getElementById('correctAnswer').className = `answer ${isCorrect ? '' : 'wrong-color'}`;
+      document.getElementById('correctAnswer').textContent = `เฉลย: ${labels[q.answer]}. ${q.choices[q.answer]}`;
+      document.getElementById('reasonText').textContent = q.reason;
+      document.getElementById('scoreGain').textContent = isCorrect ? `ได้รับ ${gain} คะแนน` : 'ข้อนี้ไม่ได้คะแนน';
+      document.getElementById('nextBtn').textContent = current === questions.length - 1 ? 'ดูผลลัพธ์สุดท้าย' : 'เปิดไพ่ถัดไป';
+      showScreen('reveal');
+    }
+
+    function nextQuestion() {
+      current++;
+      if (current >= questions.length) return endGame();
+      showScreen('game');
+      loadQuestion();
+    }
+
+    function endGame() {
+      saveLeaderboard();
+      document.getElementById('finalScore').textContent = `${score} คะแนน`;
+      document.getElementById('playerSummary').innerHTML = `<h3>ข้อมูลผู้เล่น</h3><p>ชื่อว่าที่ผู้บริหารในอนาคต: ${player.name}</p>`;
+      document.getElementById('resultSummary').innerHTML = `<h3>สรุปผล</h3><p>ตอบถูก: ${correct} ข้อ</p><p>ตอบผิด: ${wrong} ข้อ</p><p>เวลาที่ใช้ทั้งหมด: ${totalTimeUsed} วินาที</p>`;
+      document.getElementById('questionScoreTable').innerHTML = perQuestion.map((r, i) =>
+        `<tr><td>${i+1}. ${r.card}</td><td>${r.ok ? '✅ ถูก' : '❌ ผิด'}</td><td>${r.gain}</td></tr>`
+      ).join('');
+      showScreen('end');
+      loadLeaderboard();
+    }
+
+    function saveLeaderboard() {
+      const board = JSON.parse(localStorage.getItem('tarotLeaderboard') || '[]');
+      board.push({ name: player.name, score, time: new Date().toISOString() });
+      board.sort((a, b) => b.score - a.score);
+      localStorage.setItem('tarotLeaderboard', JSON.stringify(board.slice(0, 10)));
+    }
+
+    function restartGame() {
+      showScreen('home');
+      loadLeaderboard();
+    }
+
+    loadLeaderboard();
+  </script>
+</body>
+</html>
